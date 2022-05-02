@@ -1,0 +1,68 @@
+ROUTAGE
+Projet DHCP
+N.DERRADJI - E.LEE
+
+
+Pour pouvoir lancer notre serveur DHCP, il faut 2 Machines Virtuelles.
+
+-----Confguration-----
+
+-Configuration Réseaux:
+Adapter 1:
+Attached to: Internal Network
+
+-Pour récuperer le code de notre machine à notre VM:
+Aller à la Configuration de la VM:
+--> Devices --> Shared Folders --> Shared Folders Settings
+Ensuite Ajouter le nouveau fichier en cliquant sur le bouton + à droite
+--> Folder Path --> Other --> Et on choisit le dossier où il y a le code.
+
+-Désactiver le DHCP dans les machines virtuelles.
+
+
+
+
+Le fichier config.json doit être dans le même Directory que le code source.
+Ouvrir le fichier config.json et changer les paramètres (Adresse du serveur, gateway, masque sous réseau, la plage d'adresses IP, la durée du bail et DNS).
+
+Les 2 machines doivent être dans le même réseau.
+
+1) La première machine virtuelle sera le serveur DHCP:
+
+-Ouvrir un terminal
+-Exécuter la commande: $sudo ip a a 192.168.1.1/24 dev enp0s3 
+       Pour donner une adresse IP à son interface.
+
+-On configure la Gateway avec l'execution de la commande:
+$sudo route add default gw 192.168.1.1
+
+
+
+2) La deuxieme machine virtuelle sera le client DHCP:
+-Ouvrir un terminal
+-Executer la commande: $sudo ip a a 192.168.1.2/24 dev enp0s3
+        
+
+
+
+----Exécution-----
+
+1) - Ouvrir un terminal dans la machine virtuelle Serveur DHCP.
+   - Executer la commande $sudo su 
+   - Se mettre dans le Directory où il y a le code.
+   - Executer la commande #python3 dhcp_server.py
+
+2) - Ouvrir un terminal dans la machine virtuelle Client DHCP
+   - Executer la commande: $sudo ip route add 192.168.1.0/24 dev enp0s3
+   - Ouvrir un autre terminal
+   - Executer la commande: $sudo tcpdump -i any -u  
+         Pour voir l'échange de paquets
+   - Revenir au premier terminal 
+   - Executer la commande: $sudo dhcping -s 192.168.1.1 -V -r -c 192.168.1.2
+
+
+
+
+
+
+
